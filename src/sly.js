@@ -1552,6 +1552,9 @@
 			if (!o.scrollBy || pos.start === pos.end) {
 				return;
 			}
+            		if (event.originalEvent.srcElement.localName === 'p') {
+                		return;
+            		}
 			stopDefault(event, 1);
 			self.slideBy(o.scrollBy * normalizeWheelDelta(event.originalEvent));
 		}
