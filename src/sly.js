@@ -20,6 +20,7 @@
 	var clickEvent = 'click.' + namespace;
 	var mouseDownEvent = 'mousedown.' + namespace;
 	var interactiveElements = ['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA'];
+	var unscrollableElements = [];
 	var tmpArray = [];
 	var time;
 
@@ -1468,6 +1469,18 @@
 		}
 
 		/**
+         * Check whether element is unscrollable
+         */
+
+        function isUnscrollable(element) {
+            var elementMatch = ($.inArray(element.nodeName, unscrollableElements) !== -1) || $(element).is(o.unscrollable);
+            var parentMatch = ($.inArray(element.parentNode.nodeName, unscrollableElements) !== -1) || $(element).parent().is(o.unscrollable);
+            var any = elementMatch || parentMatch;
+            return !!any;
+        }
+        /**
+
+		/**
 		 * Continuous movement cleanup on mouseup.
 		 *
 		 * @return {Void}
@@ -1552,9 +1565,9 @@
 			if (!o.scrollBy || pos.start === pos.end) {
 				return;
 			}
-            		if (event.originalEvent.srcElement.localName === 'p') {
-                		return;
-            		}
+    		if (isUnscrollable(event.target)) {
+        		return;
+    		}
 			stopDefault(event, 1);
 			self.slideBy(o.scrollBy * normalizeWheelDelta(event.originalEvent));
 		}
@@ -2026,6 +2039,7 @@
 		swingSpeed:    0.2,  // Swing synchronization speed, where: 1 = instant, 0 = infinite.
 		elasticBounds: 0,    // Stretch SLIDEE position limits when dragging past FRAME boundaries.
 		interactive:   null, // Selector for special interactive elements.
+		unscrollable:  null, // Selector for special elements which should be natively scrollable.
 
 		// Scrollbar
 		scrollBar:     null, // Selector or DOM element for scrollbar container.
